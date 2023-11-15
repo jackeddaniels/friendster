@@ -9,6 +9,7 @@ function createToken(user) {
 
   let payload = {
     username: user.username,
+    friendRadius: user.friendRadius
   };
 
   return jwt.sign(payload, process.env.SECRET_KEY);

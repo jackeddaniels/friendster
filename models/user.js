@@ -10,7 +10,8 @@ class User {
 
   /** Register user with data.
    *
-   * Returns { username, firstName, lastName, email, hobbies, interests, location, friendRadius }
+   * Returns { username, firstName, lastName, email, hobbies, interests, zipcode, latitude,
+      longitude, friendRadius }
    *
    * Throws BadRequestError on duplicates.
    **/
@@ -24,7 +25,9 @@ class User {
       email,
       hobbies,
       interests,
-      location,
+      zipcode,
+      latitude,
+      longitude,
       friendRadius,
       photo }
       ) {
@@ -49,10 +52,12 @@ class User {
           email,
           hobbies,
           interests,
-          location,
+          zipcode,
+          latitude,
+          longitude,
           friend_radius,
           photo)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10, $11, $12)
       RETURNING
           username,
           first_name AS "firstName",
@@ -60,7 +65,9 @@ class User {
           email,
           hobbies,
           interests,
-          location,
+          zipcode,
+          latitude,
+          longitude,
           friend_radius AS "friendRadius",
           photo
                     `, [
@@ -71,7 +78,9 @@ class User {
       email,
       hobbies,
       interests,
-      location,
+      zipcode,
+      latitude,
+      longitude,
       friendRadius,
       photo
     ],
@@ -84,7 +93,8 @@ class User {
 
   /** authenticate user with username, password.
    *
-   * Returns { username, first_name, last_name, email, hobbies, interests, location, friendRadius}
+   * Returns { username, first_name, last_name, email, hobbies, interests, zipcode, latitude,
+      longitude, friendRadius}
    *
    * Throws UnauthorizedError is user not found or wrong password.
    **/
@@ -99,7 +109,9 @@ class User {
                email,
                hobbies,
                interests,
-               location,
+               zipcode,
+               latitude,
+               longitude,
                friend_radius AS "friendRadius",
                photo
 
@@ -131,7 +143,9 @@ class User {
             email,
             hobbies,
             interests,
-            location,
+            zipcode,
+            latitude,
+            longitude,
             friend_radius AS "friendRadius,
             photo
       FROM users
@@ -144,6 +158,17 @@ class User {
 
     return user;
   }
+
+  //get users within radius
+  static async getWithinRadius(friendRadius) {
+
+    //query db to get all users within radius
+    
+
+  }
+
+
+
 }
 
 module.exports = User
