@@ -16,7 +16,6 @@ router.post(
       if(req.file) {
           data.photo = req.file.location
       }
-      console.log("IN ROUTE", data)
 
       const newUser = await User.register (data)
       const token = createToken(newUser);

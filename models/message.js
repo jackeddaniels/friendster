@@ -21,25 +21,19 @@ class Message {
   }
 
   static async getMessages(user1, user2) {
-    const toResult = await db.query(`
+    const result = await db.query(`
     SELECT from_username,
-           to_username,
-           url
+               to_username,
+               body,
+               sent_at
     FROM messages
-    WHERE from_username = $1 AND to_username = $2`,[user1, user2]);
+    WHERE (from_username = $1 AND to_username = $2)
+        OR (from_username = $2 AND to_username = $1)
+    ORDER BY sent_at`,[user1, user2]);
 
-    const toMessages = toResult.rows
+    const messages = result.rows
 
-    const fromResult = await db.query(`
-    SELECT from_username,
-           to_username,
-           url
-    FROM messages
-    WHERE from_username = $1 AND to_username = $2`,[user2, user1]);
-
-    const fromMessages = fromResult.rows
-
-    return { toMessages, fromMessages }
+    return messages;
 
 
   }
