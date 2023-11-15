@@ -14,6 +14,7 @@ class User {
    * Throws BadRequestError on duplicates.
    **/
   //TODO: use multer/multer S3 (for parsing incoming file data), AWS-SDK as middleware for photo uploads to deal with files
+
   static async register(
     { username,
       password,
@@ -23,7 +24,8 @@ class User {
       hobbies,
       interests,
       location,
-      friendRadius }
+      friendRadius,
+      photo }
       ) {
     const duplicateCheck = await db.query(`
         SELECT username
@@ -35,7 +37,7 @@ class User {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
 
-    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await db.query(`
       INSERT INTO users
@@ -47,8 +49,9 @@ class User {
           hobbies,
           interests,
           location,
-          friend_radius)
-      VALUES ($1, $2, $3, $4, $5, $6, $8 , $9)
+          friend_radius,
+          photo)
+      VALUES ($1, $2, $3, $4, $5, $6, $8 , $9, $10)
       RETURNING
           username,
           first_name AS "firstName",
@@ -57,7 +60,8 @@ class User {
           hobbies,
           interests,
           location,
-          friendRadius
+          friendRadius,
+          photo
                     `, [
       username,
       hashedPassword,
@@ -67,7 +71,8 @@ class User {
       hobbies,
       interests,
       location,
-      friendRadius
+      friendRadius,
+      photo
     ],
     );
 
@@ -94,7 +99,8 @@ class User {
                hobbies,
                interests,
                location,
-               friend_radius AS "friendRadius
+               friend_radius AS "friendRadius,
+               photo
 
         FROM users
         WHERE username = $1`, [username],
@@ -124,7 +130,8 @@ class User {
             hobbies,
             interests,
             location,
-            friend_radius AS "friendRadius
+            friend_radius AS "friendRadius,
+            photo
       FROM users
       WHERE username = $1 `, [username]
     );
@@ -132,14 +139,6 @@ class User {
     const user = userRes.rows[0]
 
     if(!user) throw new NotFoundError(`No user: ${username}`);
-
-    const userPhotoRes = await db.query(`
-      SELECT url
-      FROM photos
-      WHERE username = $1`, [username]
-    );
-
-    user.photos = userPhotoRes.rows.map(p => p.url);
 
     return user;
   }

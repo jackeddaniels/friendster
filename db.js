@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { Client } = require("pg");
 
 const DB_URI = process.env.NODE_ENV === "test"
@@ -9,5 +10,6 @@ let db = new Client({
 });
 
 db.connect();
+
 
 module.exports = db;
