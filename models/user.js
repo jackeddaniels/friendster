@@ -100,7 +100,7 @@ class User {
                hobbies,
                interests,
                location,
-               friend_radius AS "friendRadius,
+               friend_radius AS "friendRadius",
                photo
 
         FROM users
@@ -108,6 +108,7 @@ class User {
     );
 
     const user = result.rows[0];
+    console.log("IN AUTH", username, password)
 
     if (user) {
       // compare hashed password to a new hash from password
