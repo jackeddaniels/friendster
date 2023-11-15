@@ -13,6 +13,7 @@ class User {
    *
    * Throws BadRequestError on duplicates.
    **/
+  //TODO: use multer/multer S3 (for parsing incoming file data), AWS-SDK as middleware for photo uploads to deal with files
   static async register(
     { username,
       password,
