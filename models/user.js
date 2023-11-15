@@ -4,6 +4,7 @@ const db = require("../db");
 const bcrypt = require("bcrypt");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError");
 
+
 /** User model class */
 class User {
 
@@ -51,7 +52,7 @@ class User {
           location,
           friend_radius,
           photo)
-      VALUES ($1, $2, $3, $4, $5, $6, $8 , $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10)
       RETURNING
           username,
           first_name AS "firstName",
@@ -60,7 +61,7 @@ class User {
           hobbies,
           interests,
           location,
-          friendRadius,
+          friend_radius AS "friendRadius",
           photo
                     `, [
       username,
