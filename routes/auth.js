@@ -5,24 +5,30 @@ const User = require("../models/user");
 const router = express.Router();
 const { createToken } = require("../helpers/tokens");
 const { geocoder } = require("../helpers/coordinates");
+const { IotData } = require("aws-sdk");
 
 
 router.post(
   "/register",
   uploadImage.single("image"),
   async function (req, res, next)  {
-
+    console.log("IN REGISTER ROUTE FILE", req.file)
     // location key in req.file holds the s3 url for the image
     let data = {...req.body}
     if(req.file) {
         data.photo = req.file.location
     }
 
+
+    console.log("IN REGISTER ROUTE REQ", req.body)
+
     const result = await geocoder.geocode(req.body.zipcode);
+
     const { latitude, longitude } = result[0];
     data.latitude = latitude;
     data.longitude = longitude;
 
+    console.log("IN REGISTER ROUTE DATA", data)
     const newUser = await User.register (data)
     const token = createToken(newUser);
     return res.status(201).json({token});

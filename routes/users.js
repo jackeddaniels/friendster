@@ -6,9 +6,14 @@ const {ensureLoggedIn} = require("../middleware/auth")
 
 router.get("/search", ensureLoggedIn, async function (req, res, next)  {
   const users = await User.getWithinRadius(res.locals.user.username);
-  //TODO: also filter by if user has liked/disliked make function in match model and call it here then return the final list back to client
   return res.json({users})
   }
 )
+
+router.get("/:username", async function (req, res, next) {
+  console.log("IN ROUTE", req.params.username)
+  const user = await User.get(req.params.username);
+  return res.json({user})
+})
 
 module.exports = router;

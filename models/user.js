@@ -132,6 +132,8 @@ class User {
       // compare hashed password to a new hash from password
       const isValid = await bcrypt.compare(password, user.password);
       if (isValid === true) {
+    console.log("IN AUTH TRUE");
+
         delete user.password;
         return user;
       }
@@ -152,8 +154,8 @@ class User {
             zipcode,
             latitude,
             longitude,
-            location
-            friend_radius AS "friendRadius,
+            location,
+            friend_radius AS "friendRadius",
             photo
       FROM users
       WHERE username = $1 `, [username]
@@ -166,16 +168,21 @@ class User {
     return user;
   }
 
-  //get users within radius
+  //get users within radius and then filter people the user has like or disliked
   static async getWithinRadius(username) {
 
     const result = await db.query(`
     SELECT u2.*
-    FROM users u1, users u2
-    WHERE u1.username = $1
-    AND u2.username != u1.username
-    AND ST_DWithin(u1.location, u2.location, u1.friend_radius * 1609.34);
-    `, [username]);
+    FROM users u1
+    JOIN users u2 ON u1.username = $1
+                  AND u2.username != u1.username
+                  AND ST_DWithin(u1.location, u2.location, u1.friend_radius * 1609.34)
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM user_preferences up
+        WHERE up.username = u1.username
+        AND up.target_username = u2.username
+    )`, [username])
 
     const users = result.rows;
 

@@ -21,6 +21,7 @@ function authenticateJWT(req, res, next) {
 
     try {
       res.locals.user = jwt.verify(token, process.env.SECRET_KEY);
+      console.log("TOKEN VERIFIED")
     } catch (err) {
       /* ignore invalid tokens (but don't store user!) */
     }
