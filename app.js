@@ -1,13 +1,19 @@
 const express = require("express");
 const authRoutes = require("./routes/auth")
+const userRoutes = require("./routes/users");
+const matchRoutes = require("./routes/matches");
+const { authenticateJWT } = require("./middleware/auth");
 //TOOD:Multer S3 goes here for sending filed
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(authenticateJWT)
 
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/matches", matchRoutes)
 
 
 app.get("/", function (req, res, next) {

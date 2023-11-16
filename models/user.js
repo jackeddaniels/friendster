@@ -30,7 +30,7 @@ class User {
       longitude,
       friendRadius,
       photo }
-      ) {
+  ) {
     const duplicateCheck = await db.query(`
         SELECT username
         FROM users
@@ -86,6 +86,12 @@ class User {
     ],
     );
 
+    await db.query(`
+    UPDATE users
+    SET location = ST_SetSRID(ST_Makepoint($1, $2), 4326)
+    WHERE username = $3
+    `, [longitude, latitude, username]);
+
     const user = result.rows[0];
 
     return user;
@@ -120,7 +126,7 @@ class User {
     );
 
     const user = result.rows[0];
-    console.log("IN AUTH", username, password)
+    console.log("IN AUTH", username, password);
 
     if (user) {
       // compare hashed password to a new hash from password
@@ -146,24 +152,36 @@ class User {
             zipcode,
             latitude,
             longitude,
+            location
             friend_radius AS "friendRadius,
             photo
       FROM users
       WHERE username = $1 `, [username]
     );
 
-    const user = userRes.rows[0]
+    const user = userRes.rows[0];
 
-    if(!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user: ${username}`);
 
     return user;
   }
 
   //get users within radius
-  static async getWithinRadius(friendRadius) {
+  static async getWithinRadius(username) {
 
-    //query db to get all users within radius
-    
+    const result = await db.query(`
+    SELECT u2.*
+    FROM users u1, users u2
+    WHERE u1.username = $1
+    AND u2.username != u1.username
+    AND ST_DWithin(u1.location, u2.location, u1.friend_radius * 1609.34);
+    `, [username]);
+
+    const users = result.rows;
+
+    if (!users || users.length === 0) throw new NotFoundError('No users in friend radius :(');
+
+    return users;
 
   }
 
@@ -171,4 +189,4 @@ class User {
 
 }
 
-module.exports = User
+module.exports = User;

@@ -2,12 +2,13 @@ const express = require("express");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const router = express.Router();
-const { createToken } = require("../helpers/tokens");
-const { geocoder } = require("../helpers/coordinates");
+const {ensureLoggedIn} = require("../middleware/auth")
 
-router.post("/search", async function (req, res, next)  {
-  const friendRadius = res.locals.friendRadius;
-  //call User method to query db for users within user's radius
-
+router.get("/search", ensureLoggedIn, async function (req, res, next)  {
+  const users = await User.getWithinRadius(res.locals.user.username);
+  //TODO: also filter by if user has liked/disliked make function in match model and call it here then return the final list back to client
+  return res.json({users})
   }
 )
+
+module.exports = router;
