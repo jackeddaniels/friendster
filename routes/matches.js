@@ -7,12 +7,13 @@ const {ensureLoggedIn} = require("../middleware/auth")
 
 router.get("/", ensureLoggedIn, async function (req, res, next) {
     const users = await Match.getMatches(res.locals.user.username)
+    console.log("IN ROUTE GET MATCHES", users)
     return res.json({ users })
   }
 )
 
 router.post("/preference", ensureLoggedIn, async function (req,res,next) {
-    const { username, targetUsername, isLiked } = req.body
+    const { username, targetUsername, isLiked } = req.body.likeData
     const result = await Match.likeOrDislikeUser(username, targetUsername, isLiked)
     return res.json({ result })
   }

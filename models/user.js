@@ -172,7 +172,7 @@ class User {
   static async getWithinRadius(username) {
 
     const result = await db.query(`
-    SELECT u2.*
+    SELECT u2.username, u2.first_name AS "firstName", u2.last_name AS "lastName", u2.hobbies, u2.interests, u2.zipcode, u2.photo
     FROM users u1
     JOIN users u2 ON u1.username = $1
                   AND u2.username != u1.username

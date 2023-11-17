@@ -12,7 +12,7 @@ router.post(
   "/register",
   uploadImage.single("image"),
   async function (req, res, next)  {
-    console.log("IN REGISTER ROUTE FILE", req.file)
+
     // location key in req.file holds the s3 url for the image
     let data = {...req.body}
     if(req.file) {
@@ -20,7 +20,7 @@ router.post(
     }
 
 
-    console.log("IN REGISTER ROUTE REQ", req.body)
+
 
     const result = await geocoder.geocode(req.body.zipcode);
 
@@ -28,7 +28,7 @@ router.post(
     data.latitude = latitude;
     data.longitude = longitude;
 
-    console.log("IN REGISTER ROUTE DATA", data)
+    
     const newUser = await User.register (data)
     const token = createToken(newUser);
     return res.status(201).json({token});

@@ -11,7 +11,6 @@ router.get("/search", ensureLoggedIn, async function (req, res, next)  {
 )
 
 router.get("/:username", async function (req, res, next) {
-  console.log("IN ROUTE", req.params.username)
   const user = await User.get(req.params.username);
   return res.json({user})
 })

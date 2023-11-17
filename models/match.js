@@ -4,6 +4,7 @@ const { NotFoundError, UnauthorizedError } = require("../expressError");
 
 class Match {
   static async likeOrDislikeUser(username, targetUsername, isLiked) {
+    console.log("IN MODEL MATCH",username, targetUsername, isLiked)
     const result = await db.query(`
     INSERT INTO user_preferences
     (username, target_username, is_liked)
@@ -18,9 +19,10 @@ class Match {
   }
 
   static async getMatches(username) {
+    console.log("IN MATCH MODEL GET MATCHES", username)
     const result = await db.query(`
     SELECT
-      u.*
+      u.username, u.first_name AS "firstName", u.last_name AS "lastName", u.hobbies, u.interests, u.zipcode, u.photo
     FROM
       users u
     JOIN
