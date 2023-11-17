@@ -23,3 +23,13 @@ CREATE TABLE user_preferences (
   FOREIGN KEY (username) REFERENCES users(username),
   FOREIGN KEY (target_username) REFERENCES users(username)
 );
+
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  from_username VARCHAR(25) NOT NULL,
+  to_username VARCHAR(25) NOT NULL,
+  body TEXT NOT NULL,
+  sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (from_username) REFERENCES users(username),
+  FOREIGN KEY (to_username) REFERENCES users(username)
+);

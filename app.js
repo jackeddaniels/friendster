@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const matchRoutes = require("./routes/matches");
+const messsageRoutes = require("./routes/messages")
 const { authenticateJWT } = require("./middleware/auth");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("./expressError");
 //TOOD:Multer S3 goes here for sending filed
@@ -17,6 +18,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/matches", matchRoutes);
+app.use("/messages", messsageRoutes);
 
 
 app.get("/", function (req, res, next) {
