@@ -18,17 +18,14 @@ router.post(
     if(req.file) {
         data.photo = req.file.location
     }
-
-
-
-
+    
     const result = await geocoder.geocode(req.body.zipcode);
 
     const { latitude, longitude } = result[0];
     data.latitude = latitude;
     data.longitude = longitude;
 
-    
+
     const newUser = await User.register (data)
     const token = createToken(newUser);
     return res.status(201).json({token});
